@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>French African Foundation - Désamorçage</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      color: red;
+      font-family: 'Courier New', Courier, monospace;
+      overflow: hidden;
+    }
+
+    h1, h2 {
+      text-align: center;
+      margin: 0.5em 0;
+      font-weight: bold;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      color: white;
+    }
+
+    h2 {
+      font-size: 1.2em;
+      color: red;
+    }
+
+    #code-input {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      width: 200px;
+      margin: 1em auto;
+    }
+
+    .digit {
+      background-color: black;
+      color: red;
+      border: 2px solid red;
+      padding: 20px;
+      font-size: 1.5em;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+    }
+
+    .digit:hover {
+      background-color: red;
+      color: black;
+    }
+
+    #result {
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      margin-top: 1em;
+    }
+
+    canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+  <h1>FRENCH AFRICAN FOUNDATION</h1>
+  <h2>Insérez le code de désamorçage</h2>
+
+  <div id="code-input"></div>
+  <div id="result"></div>
+
+  <canvas id="matrix"></canvas>
+
+  <script>
+    const canvas = document.getElementById("matrix");
+    const ctx = canvas.getContext("2d");
+
+    canvas.height = window.innerHeight;
+    canvas.width = window.innerWidth;
+
+    const letters = "01ABCDEF";
+    const fontSize = 14;
+    const columns = canvas.width / fontSize;
+    const drops = Array.from({ length: columns }).fill(1);
+
+    function drawMatrix() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#ff0000";
+      ctx.font = fontSize + "px monospace";
+
+      for (let i = 0; i < drops.length; i++) {
+        const text = letters.charAt(Math.floor(Math.random() * letters.length));
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+          drops[i] = 0;
+        }
+
+        drops[i]++;
+      }
+    }
+
+    setInterval(drawMatrix, 33);
+
+    const codeInput = document.getElementById("code-input");
+    const resultDisplay = document.getElementById("result");
+    let enteredCode = "";
+
+    for (let i = 1; i <= 9; i++) {
+      const btn = document.createElement("div");
+      btn.classList.add("digit");
+      btn.textContent = i;
+      btn.addEventListener("click", () => {
+        enteredCode += i;
+        if (enteredCode.length === 3) {
+          if (enteredCode === "623") {
+            resultDisplay.textContent = "CODE BON";
+            resultDisplay.style.color = "lime";
+          } else {
+            resultDisplay.textContent = "ERREUR";
+            resultDisplay.style.color = "red";
+          }
+          setTimeout(() => {
+            enteredCode = "";
+            resultDisplay.textContent = "";
+          }, 1500);
+        }
+      });
+      codeInput.appendChild(btn);
+    }
+  </script>
+</body>
+</html>
